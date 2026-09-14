@@ -4,7 +4,7 @@ Deze uitleg hoort bij de studentenvariant van **TicketFaster**: een kleine Sprin
 
 Lees eerst [Spring Boot als verantwoordelijkheidshiërarchie](spring-boot-als-verantwoordelijkheid.md) (voortzetting van de OOP-filosofie). Gebruik daarna dit document om in *deze* codebase te zien **wie wat weet** en **aan wie iets gevraagd wordt**.
 
-Relatieve links gaan uit van deze `UITLEG.md` in de **root** van het archief/repo (naast de map `Ticket faster/`).
+Relatieve links gaan uit van deze `UITLEG.md` in de **root** van het archief/repo (naast de map `ticketfaster/`).
 
 ## Lagen in één zin
 
@@ -24,7 +24,7 @@ Spring Boot zelf: start de applicatie, koppelt objecten aan elkaar (constructor 
 
 ## TicketfasterApiApplication
 
-Bestand: [`TicketfasterApiApplication.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/TicketfasterApiApplication.java)
+Bestand: [`TicketfasterApiApplication.java`](ticketfaster/src/main/java/nl/han/ticketfaster/TicketfasterApiApplication.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
@@ -38,12 +38,12 @@ Bestand: [`TicketfasterApiApplication.java`](Ticket%20faster/src/main/java/nl/ha
 
 ## TicketController
 
-Bestand: [`TicketController.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/controller/TicketController.java)
+Bestand: [`TicketController.java`](ticketfaster/src/main/java/nl/han/ticketfaster/controller/TicketController.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
 | **Weet zelf** | — |
-| **Kent** | [`TicketService`](Ticket%20faster/src/main/java/nl/han/ticketfaster/service/TicketService.java) (object-typed field via constructor) |
+| **Kent** | [`TicketService`](ticketfaster/src/main/java/nl/han/ticketfaster/service/TicketService.java) (object-typed field via constructor) |
 | **Kan vragen beantwoorden** | HTTP: beschikbaarheid (`GET /tickets/available`) |
 | **Kan taken uitvoeren** | HTTP: kopen (`POST /tickets/purchases`), wijzigen (`PUT /tickets`), annuleren (`DELETE /tickets`) |
 | **Delegeert aan** | `TicketService` voor alle businesslogica |
@@ -54,21 +54,21 @@ Bestand: [`TicketController.java`](Ticket%20faster/src/main/java/nl/han/ticketfa
 
 ## TicketService
 
-Bestand: [`TicketService.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/service/TicketService.java)
+Bestand: [`TicketService.java`](ticketfaster/src/main/java/nl/han/ticketfaster/service/TicketService.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
 | **Weet zelf** | Businessregels (o.a. quantity 1–5, geannuleerd concert mag niet, genoeg stoelen?) |
-| **Kent** | [`VisitorRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/VisitorRepository.java), [`ConcertRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/ConcertRepository.java), [`TicketRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/TicketRepository.java) |
+| **Kent** | [`VisitorRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/VisitorRepository.java), [`ConcertRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/ConcertRepository.java), [`TicketRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/TicketRepository.java) |
 | **Kan vragen beantwoorden** | Hoeveel tickets zijn verkocht / beschikbaar voor een concert? |
 | **Kan taken uitvoeren** | Tickets kopen, wijzigen, annuleren (met validatie) |
-| **Delegeert aan** | Repositories voor zoeken/tellen/opslaan; gooit [`NotFoundException`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/NotFoundException.java) / [`ValidationException`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/ValidationException.java) bij fouten |
+| **Delegeert aan** | Repositories voor zoeken/tellen/opslaan; gooit [`NotFoundException`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/NotFoundException.java) / [`ValidationException`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/ValidationException.java) bij fouten |
 
 ---
 
 ## Repository-interfaces
 
-### ConcertRepository — [`ConcertRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/ConcertRepository.java)
+### ConcertRepository — [`ConcertRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/ConcertRepository.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
@@ -76,23 +76,23 @@ Bestand: [`TicketService.java`](Ticket%20faster/src/main/java/nl/han/ticketfaste
 | **Kent** | — |
 | **Kan vragen beantwoorden** | Zoek concert op id → `Optional<Concert>` |
 | **Kan taken uitvoeren** | — |
-| **Delegeert aan** | Implementatie: [`ConcertJdbcRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/ConcertJdbcRepository.java) |
+| **Delegeert aan** | Implementatie: [`ConcertJdbcRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/ConcertJdbcRepository.java) |
 
-### VisitorRepository — [`VisitorRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/VisitorRepository.java)
+### VisitorRepository — [`VisitorRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/VisitorRepository.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
 | **Kan vragen beantwoorden** | Zoek bezoeker op naam |
 | **Kan taken uitvoeren** | Bezoeker aanmaken |
-| **Delegeert aan** | [`VisitorJdbcRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/VisitorJdbcRepository.java) |
+| **Delegeert aan** | [`VisitorJdbcRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/VisitorJdbcRepository.java) |
 
-### TicketRepository — [`TicketRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/TicketRepository.java)
+### TicketRepository — [`TicketRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/TicketRepository.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
 | **Kan vragen beantwoorden** | Aantal verkochte tickets voor concert; aankoop zoeken op visitor+concert |
 | **Kan taken uitvoeren** | Aankoop aanmaken/wijzigen/verwijderen |
-| **Delegeert aan** | [`TicketJdbcRepository`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/TicketJdbcRepository.java) |
+| **Delegeert aan** | [`TicketJdbcRepository`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/TicketJdbcRepository.java) |
 
 **Waarom een interface?** De service vraagt: “Repository, vind dit concert.” Hij hoeft niet te weten *hoe* (SQL). Dat is dezelfde OOP-gedachte als “Motor, werk jij?” i.p.v. intern in andermans administratie neuzen.
 
@@ -100,7 +100,7 @@ Bestand: [`TicketService.java`](Ticket%20faster/src/main/java/nl/han/ticketfaste
 
 ## JDBC-implementaties
 
-### ConcertJdbcRepository — [`ConcertJdbcRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/ConcertJdbcRepository.java)
+### ConcertJdbcRepository — [`ConcertJdbcRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/ConcertJdbcRepository.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
@@ -109,7 +109,7 @@ Bestand: [`TicketService.java`](Ticket%20faster/src/main/java/nl/han/ticketfaste
 | **Kan vragen beantwoorden** | `findById` tegen tabel `concerts` |
 | **Delegeert aan** | JDBC-template / database |
 
-### TicketJdbcRepository — [`TicketJdbcRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/TicketJdbcRepository.java)
+### TicketJdbcRepository — [`TicketJdbcRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/TicketJdbcRepository.java)
 
 | Categorie | Beschrijving |
 |-----------|--------------|
@@ -117,7 +117,7 @@ Bestand: [`TicketService.java`](Ticket%20faster/src/main/java/nl/han/ticketfaste
 | **Kent** | `NamedParameterJdbcTemplate` |
 | **Kan vragen/taken** | count / find / insert / update / delete |
 
-### VisitorJdbcRepository — [`VisitorJdbcRepository.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/repository/jdbc/VisitorJdbcRepository.java)
+### VisitorJdbcRepository — [`VisitorJdbcRepository.java`](ticketfaster/src/main/java/nl/han/ticketfaster/repository/jdbc/VisitorJdbcRepository.java)
 
 Zelfde patroon voor `visitors`.
 
@@ -129,9 +129,9 @@ Records zonder gedrag — vooral “wat weet ik?”:
 
 | Class | Bestand | Weet zelf |
 |-------|---------|-----------|
-| `Concert` | [`Concert.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/model/Concert.java) | id, artist, location, year, totalSeats, cancelled |
-| `Visitor` | [`Visitor.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/model/Visitor.java) | id, name, vip, wishes |
-| `TicketPurchase` | [`TicketPurchase.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/model/TicketPurchase.java) | id, visitorId, concertId, quantity |
+| `Concert` | [`Concert.java`](ticketfaster/src/main/java/nl/han/ticketfaster/model/Concert.java) | id, artist, location, year, totalSeats, cancelled |
+| `Visitor` | [`Visitor.java`](ticketfaster/src/main/java/nl/han/ticketfaster/model/Visitor.java) | id, name, vip, wishes |
+| `TicketPurchase` | [`TicketPurchase.java`](ticketfaster/src/main/java/nl/han/ticketfaster/model/TicketPurchase.java) | id, visitorId, concertId, quantity |
 
 ---
 
@@ -139,9 +139,9 @@ Records zonder gedrag — vooral “wat weet ik?”:
 
 | Class | Bestand | Rol |
 |-------|---------|-----|
-| `TicketPurchaseRequest` | [`TicketPurchaseRequest.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/dto/TicketPurchaseRequest.java) | Invoer kopen/wijzigen + Bean Validation (`@NotBlank`, `@Min`, `@Max`) |
-| `TicketAvailabilityResponse` | [`TicketAvailabilityResponse.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/dto/TicketAvailabilityResponse.java) | Antwoord beschikbaarheid |
-| `MessageResponse` | [`MessageResponse.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/dto/MessageResponse.java) | Eenvoudig tekstantwoord |
+| `TicketPurchaseRequest` | [`TicketPurchaseRequest.java`](ticketfaster/src/main/java/nl/han/ticketfaster/dto/TicketPurchaseRequest.java) | Invoer kopen/wijzigen + Bean Validation (`@NotBlank`, `@Min`, `@Max`) |
+| `TicketAvailabilityResponse` | [`TicketAvailabilityResponse.java`](ticketfaster/src/main/java/nl/han/ticketfaster/dto/TicketAvailabilityResponse.java) | Antwoord beschikbaarheid |
+| `MessageResponse` | [`MessageResponse.java`](ticketfaster/src/main/java/nl/han/ticketfaster/dto/MessageResponse.java) | Eenvoudig tekstantwoord |
 
 DTOs zijn geen “slimme objecten” met taken; ze zijn boodschappen tussen buitenwereld en service.
 
@@ -151,9 +151,9 @@ DTOs zijn geen “slimme objecten” met taken; ze zijn boodschappen tussen buit
 
 | Class | Bestand | Verantwoordelijkheid |
 |-------|---------|----------------------|
-| `NotFoundException` | [`NotFoundException.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/NotFoundException.java) | “Bestaat niet” signaleren |
-| `ValidationException` | [`ValidationException.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/ValidationException.java) | “Mag niet” signaleren |
-| `ApiExceptionHandler` | [`ApiExceptionHandler.java`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/ApiExceptionHandler.java) | Exceptions → HTTP 404/400 + `MessageResponse` |
+| `NotFoundException` | [`NotFoundException.java`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/NotFoundException.java) | “Bestaat niet” signaleren |
+| `ValidationException` | [`ValidationException.java`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/ValidationException.java) | “Mag niet” signaleren |
+| `ApiExceptionHandler` | [`ApiExceptionHandler.java`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/ApiExceptionHandler.java) | Exceptions → HTTP 404/400 + `MessageResponse` |
 
 De service gooit; de handler vertaalt naar HTTP. Dat is taakverdeling: business zegt *wat* misgaat, de handler zegt *hoe* dat naar buiten klinkt.
 
@@ -161,22 +161,22 @@ De service gooit; de handler vertaalt naar HTTP. Dat is taakverdeling: business 
 
 ## Database-schema
 
-- [`schema.sql`](Ticket%20faster/src/main/resources/schema.sql) — tabellen `concerts`, `visitors`, `ticket_purchases`
-- [`data.sql`](Ticket%20faster/src/main/resources/data.sql) — startdata
-- [`application.yml`](Ticket%20faster/src/main/resources/application.yml) — H2 in-memory, poort 8080, Swagger UI
+- [`schema.sql`](ticketfaster/src/main/resources/schema.sql) — tabellen `concerts`, `visitors`, `ticket_purchases`
+- [`data.sql`](ticketfaster/src/main/resources/data.sql) — startdata
+- [`application.yml`](ticketfaster/src/main/resources/application.yml) — H2 in-memory, poort 8080, Swagger UI
 
 ---
 
 ## Delegatieketens
 
 ### 1. Beschikbaarheid opvragen
-`HTTP GET` → [`TicketController.getAvailability`](Ticket%20faster/src/main/java/nl/han/ticketfaster/controller/TicketController.java) → [`TicketService.getAvailability`](Ticket%20faster/src/main/java/nl/han/ticketfaster/service/TicketService.java) → `ConcertRepository.findById` → `TicketRepository.countSoldTicketsForConcert` → DTO terug
+`HTTP GET` → [`TicketController.getAvailability`](ticketfaster/src/main/java/nl/han/ticketfaster/controller/TicketController.java) → [`TicketService.getAvailability`](ticketfaster/src/main/java/nl/han/ticketfaster/service/TicketService.java) → `ConcertRepository.findById` → `TicketRepository.countSoldTicketsForConcert` → DTO terug
 
 ### 2. Tickets kopen
 `HTTP POST` → Controller `buyTickets` → Service: valideer quantity → zoek Visitor → zoek Concert → check niet geannuleerd → check voorraad → `TicketRepository.createPurchase`
 
 ### 3. Foutpad “niet gevonden”
-Service gooit `NotFoundException` → [`ApiExceptionHandler`](Ticket%20faster/src/main/java/nl/han/ticketfaster/exception/ApiExceptionHandler.java) → HTTP 404 + message
+Service gooit `NotFoundException` → [`ApiExceptionHandler`](ticketfaster/src/main/java/nl/han/ticketfaster/exception/ApiExceptionHandler.java) → HTTP 404 + message
 
 ### 4. Ongeldige JSON-body
 Spring Validation op DTO → `MethodArgumentNotValidException` → handler → HTTP 400
@@ -260,9 +260,9 @@ Jij schrijft vooral: **wie is verantwoordelijk voor welke vraag/taak?** Spring v
 
 ## Verken-tips voor studenten
 
-1. Start bij [`TicketController`](Ticket%20faster/src/main/java/nl/han/ticketfaster/controller/TicketController.java): welke methoden bestaan, wat delegeert elk?
+1. Start bij [`TicketController`](ticketfaster/src/main/java/nl/han/ticketfaster/controller/TicketController.java): welke methoden bestaan, wat delegeert elk?
 2. Volg één pad (bijv. kopen) tot in de JDBC-class.
 3. Zet een breakpoint in de service en in de repository: zie de call stack als hiërarchie.
 4. Open Swagger en roep endpoints aan; kijk wat er gebeurt bij foutieve input.
-5. Let op: dit is een **student-buggy** variant (`ticketfaster-api-student-buggy` in [`pom.xml`](Ticket%20faster/pom.xml)). Vergelijk bedoelde businessregels met de code (bijv. berekening van beschikbare stoelen in `getAvailability`).
+5. Let op: dit is een **student-buggy** variant (`ticketfaster-api-student-buggy` in [`pom.xml`](ticketfaster/pom.xml)). Vergelijk bedoelde businessregels met de code (bijv. berekening van beschikbare stoelen in `getAvailability`).
 
