@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:ticketfaster;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  sql:
+    init:
+      mode: always
+server:
+  port: 8080
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    version: OPENAPI_3_0
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
