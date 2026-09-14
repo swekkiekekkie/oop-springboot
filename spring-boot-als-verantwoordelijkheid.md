@@ -199,3 +199,5 @@ Daar komt bij Spring Boot bij:
 Als je TicketFaster verkent: vraag bij elke class opnieuw *wat weet jij zelf, wie ken je, wat kunnen anderen je vragen, wat delegeer je?* De annotaties (`@RestController`, `@Service`, `@Repository`) zijn labels op die banen — niet magie die OOP vervangt.
 
 Zie ook de concrete tabellen en ketens in [`UITLEG.md`](UITLEG.md).
+
+Volgende document: [`dependency-injection-en-testbaarheid.md`](dependency-injection-en-testbaarheid.md).
