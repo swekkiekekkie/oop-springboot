@@ -19,9 +19,9 @@ Dan kun je ze in een test niet makkelijk vervangen door een nep-versie.
 
 ---
 
-## 2. Zelf knopen vs. laten aanleveren
+## 2. Zelf spawnen vs. laten aanleveren
 
-### Zelf knopen (DIY)
+### Zelf spawnen (DIY)
 
 Stel: `TicketService` doet dit ergens:
 
@@ -52,7 +52,7 @@ public TicketService(VisitorRepository visitorRepository,
 Vertaling:
 
 > Service, jij **kent** repositories.  
-> Jij maakt ze niet zelf. Iemand anders geeft ze je.
+> Jij spawnt ze niet zelf. Iemand anders geeft ze je.
 
 Dat “iemand anders” is in Spring Boot vaak de **container** (IoC): Spring maakt de objecten en zet ze in elkaar.
 
@@ -60,40 +60,93 @@ Dat “iemand anders” is in Spring Boot vaak de **container** (IoC): Spring ma
 
 ## 3. Drie manieren om iets “aan te leveren”
 
-| Manier | Hoe ziet het eruit? | Handig? |
-|--------|---------------------|---------|
-| **Constructor-injectie** | Via de constructor (`private final …`) | Meestal ja: duidelijk, verplicht, goed testbaar |
-| **Field-injectie** | `@Autowired` op een veld | Meestal nee: minder zichtbaar, lastiger in unit tests |
-| **Setter-injectie** | Via een `set…`-methode | Soms; vaak minder strak dan constructor |
+### Constructor-injectie (aanrader)
 
-In TicketFaster zie je **constructor-injectie**:
+Via de constructor. Velden vaak `private final`.
 
 ```java
-public TicketController(TicketService ticketService) {
-    this.ticketService = ticketService;
+@RestController
+@RequestMapping("/tickets")
+public class TicketController {
+
+    private final TicketService ticketService;
+
+    public TicketController(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
 }
 ```
 
-Geen `@Autowired` op het veld nodig: bij **één** constructor doet Spring dit vanzelf.
+Bij **één** constructor hoeft er geen `@Autowired` op: Spring vult dit vanzelf.  
+Dit is wat TicketFaster gebruikt.
+
+### Field-injectie
+
+`@Autowired` direct op het veld. Geen constructor nodig — maar minder duidelijk en lastiger in unit tests.
+
+```java
+@RestController
+@RequestMapping("/tickets")
+public class TicketController {
+
+    @Autowired
+    private TicketService ticketService;
+}
+```
+
+### Setter-injectie
+
+Via een `set…`-methode. Spring kan die aanroepen na het maken van het object.
+
+```java
+@RestController
+@RequestMapping("/tickets")
+public class TicketController {
+
+    private TicketService ticketService;
+
+    @Autowired
+    public void setTicketService(TicketService ticketService) {
+        this.ticketService = ticketService;
+    }
+}
+```
+
+| Manier | Kort | Handig? |
+|--------|------|---------|
+| Constructor | verplicht bij `new` / Spring | Meestal ja |
+| Field | `@Autowired` op veld | Meestal nee |
+| Setter | `@Autowired` op setter | Soms; minder strak |
 
 ---
 
-## 4. Waarom constructor-injectie testen makkelijker maakt
+## 4. Waarom neppe versies in unit tests?
 
-In [`TicketServiceTest`](ticketfaster/src/test/java/nl/han/ticketfaster/service/TicketServiceTest.java) gebeurt dit:
+Een **unit test** wil één stukje gedrag testen — hier: de **regels van `TicketService`**.
 
-1. Er komen **nep**-repositories (`@Mock`).
-2. Die worden in de service gestopt (`@InjectMocks` / constructor).
-3. De test zegt: “als de repository *dit* antwoordt, moet de service *dat* doen.”
+Als de service een echte `TicketJdbcRepository` (en dus een database) meesleept, test je ineens:
 
-Je test dan de **regels van de service**, niet de echte database.
+1. de service, **en**
+2. de repository / database.
 
-Zonder injectie zou de service intern `new TicketJdbcRepository` doen. Dan moet je ofwel een echte database meeslepen, ofwel de class openbreken. Dat is precies “moeilijk testbaar”.
+Dat zijn **twee units**. Gaat er iets mis, dan weet je niet goed waar.  
+Bovendien wordt de test trager en breekbaarder.
+
+Daarom geef je in de test een **nep**-repository (`@Mock`): die antwoordt precies wat jij wilt.  
+Dan test je alleen de service.
+
+In [`TicketServiceTest`](ticketfaster/src/test/java/nl/han/ticketfaster/service/TicketServiceTest.java):
+
+1. nep-repositories (`@Mock`);
+2. die gaan de service in (`@InjectMocks` / constructor);
+3. de test zegt: “als de repository *dit* antwoordt, moet de service *dat* doen.”
+
+Dat kan alleen als die repositories **van buiten** komen (DI), niet als de service ze zelf spawnt met `new`.
 
 Kort:
 
-- **Echte dependency vastgenageld** → moeilijk vervangen in een test  
-- **Dependency via constructor** → in de test geef je een mock mee  
+- **Echte dependency zelf gespawnd** → je test vaak 2 units tegelijk  
+- **Dependency via constructor** → in de test een mock → je test 1 unit  
 
 ---
 
@@ -143,7 +196,7 @@ Dat past bij OOP: je vraagt aan een **belofte** (`TicketRepository`), niet aan �
 
 | Wat je ziet | Wat het betekent |
 |-------------|------------------|
-| `new` van een repository in een service | Dependency niet geïnjecteerd; testen wordt zwaar |
+| `new` van een repository in een service | Dependency niet geïnjecteerd; je test makkelijk 2 units |
 | `@Autowired` op private velden overal | Werkt vaak, maar constructor is duidelijker |
 | Class zonder dependencies, maar wél database-aanroepen | Verantwoordelijkheid zit verkeerd (waarschijnlijk) |
 | Test die de hele Spring-app start voor elke kleine regel | Kan, maar unit test met mocks is lichter voor service-regels |
@@ -153,9 +206,10 @@ Dat past bij OOP: je vraagt aan een **belofte** (`TicketRepository`), niet aan �
 ## 9. Samenvatting
 
 1. Object-velden = “aan wie mag ik iets vragen?”  
-2. **DI** = die objecten krijg je van buiten, je maakt ze niet stiekem zelf.  
+2. **DI** = die objecten krijg je van buiten, je spawnt ze niet stiekem zelf.  
 3. **Constructor-injectie** maakt dat expliciet en goed testbaar.  
-4. Spring (IoC) bouwt de keten van beans; jij houdt de verantwoordelijkheden scherp.
+4. Neppe dependencies in unit tests → je test **1** unit, niet 2.  
+5. Spring (IoC) bouwt de keten van beans; jij houdt de verantwoordelijkheden scherp.
 
 Volgende stap in de leerlijn (los document): Maven / `pom.xml` en builden.
 
